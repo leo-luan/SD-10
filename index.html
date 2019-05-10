@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Sistemas Distribuídos - Aula10</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<p>
+						Universidade do Estado de Mato Grosso <br />
+						<em>Campus</em> Cáceres <br />
+						Faculdade de Ciências Exatas <br/>
+						Bacharelado em Ciência da Computação
+					</p>
+					<br />
+					<h2>Sistemas Distribuídos</h2>
+					<h4>Capítulo 7 - Consistência e Replicação</h4>
+					<br />
+					<p>
+						Leonardo Luan Martins da Silva <br />
+						10 de maio de 2019
+					</p>
+				</section>
+
+				<section style="text-align: left; font-size: 80%">
+					<h3>Introdução</h3>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>Razões para replicação:</li>
+							<ul>
+								<li style='margin-bottom: 25px'>Confiabilidade -> Manter várias cópias possibilita melhor proteção contra dados corrompidos.</li>
+								<li style='margin-bottom: 25px'>Desempenho -> O desempenho de um SD precisa ser garantido quando ele é ampliado</li>
+								<ul>
+									<li style='margin-bottom: 25px'>Ampliação em quantidade - maior número de processos acessando um mesmo recurso. A replicação garante o balanceamento de carga entre os recursos.</li>
+									<li>Ampliação geográfica - processos dispersos tendem a ter maior tempo de resposta. A replicação pode mover cópia do recurso para perto dos consumidores.</li>
+								</ul>
+							</ul>
+						</ul>
+					</section>
+
+					<section>
+						<h4>Problema da replicação:</h4>
+
+						<ul>
+							<li style='margin-bottom: 25px'>Inconsistência:</li>
+							<ul>
+								<li style='margin-bottom: 25px'>Como manter as réplicas idênticas?</li>
+								<li style='margin-bottom: 25px'>Se uma cópia é modificada, a mudança deve ser feita em todas as outras cópias.</li>
+								<li>Manter cópias atualizadas requer, portanto, maior capacidade de comunicação (largura de banda).</li>
+							</ul>
+						</ul>
+					</section>
+				</section>
+
+				<section style="text-align: left; font-size: 80%">
+					<h3 style="font-size: 130%">Modelos de Consistência Centrado em Dados</h3>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>Depósito de dados é um termo usado para generalizar quaisquer mecanismos de armazenamento, como memória compartilhada, bancos de dados, ou sistema de arquivos.</li>
+							<li style='margin-bottom: 25px'>Um depósito de dados pode ser distribuído fisicamente por várias máquinas.</li>
+							<li style='margin-bottom: 25px'>A premissa é que cada processo que pode acessar dados do depósito tem uma cópia local (ou próxima) disponível do depósito inteiro.</li>
+							<li>Operações de escrita no depósito são propagadas para todas as cópias.</li>
+						</ul>
+					</section>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>Um modelo de consistência é, em essência, um contrato entre os processos e o depósito.</li>
+							<li style='margin-bottom: 25px'>Normalmente, um processo que executa uma operação de leitura sobre um item de dados espera que a operação retorne o valor escrito pela última operação de escrita sobre aquele dado.</li>
+							<li><strong>Na ausência de um relógio global, é difícil definir com precisão qual operação de escrita é a última.</strong></li>
+						</ul>
+					</section>
+				</section>
+
+				<section style="text-align: left; font-size: 80%">
+					<h3>Consistência contínua</h3>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>A replicação de dados propõe problemas de consistência que não podem ser resolvidos com eficiência de modo geral.</li>
+							<li style='margin-bottom: 25px'>Somente abrandando a consistência, ou seja, definindo regras para a tolerância de inconsistências, é que podemos ter certa eficiência.</li>
+						</ul>
+					</section>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>A Consistência contínua se refere a 3 eixos de inconsistências:</li>
+							<ul>
+								<li style='margin-bottom: 25px'>Desvio de valores numéricos entre réplicas</li>
+								<li style='margin-bottom: 25px'>Desvio de idade entre réplicas</li>
+								<li>Desvio em relação à ordenação de operações de atualização.</li>
+							</ul>
+						</ul>
+					</section>
+
+					<section>
+						<ul>
+							<li style='margin-bottom: 25px'>A medida de inconsistência em termos de desvios numéricos pode ser utilizada por aplicações para as quais os dados têm semântica numérica.</li>
+							<ul>
+								<li style='margin-bottom: 25px'>Exemplo: duas cópias não devem se desviar por mais de 0,02.</li>
+							</ul>
+						</ul>
+						<br/>
+						<ul>
+							<li style='margin-bottom: 25px'>Os desvios de idade estão relacionados com a última vez que uma réplica foi atualizada.</li>
+							<ul>
+								<li style='margin-bottom: 25px'>Algumas aplicações podem tolerar que uma réplica forneça dados antigos, contanto que não sejam demasiadamente antigos.</li>
+							</ul>
+						</ul>
+					</section>
+				</section>
+
+				<section style="text-align: left; font-size: 80%">
+					<h3>Lembretes</h3>
+
+					<ul>
+						<li style='margin-bottom: 25px'>Definir grupos do trabalho</li>
+						<li style='margin-bottom: 25px'>Calendário da disciplina</li>
+					</ul>
+				</section>
+
+				<section style="text-align: center">
+					<br/><br/><br/><br/>
+					<h5>Aguardem a chamada!<br/><br/>Até a próxima aula!</h5>
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				center: false,
+				mouseWheel: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+			Reveal.configure({ slideNumber: 'c/t' });
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</body>
+</html>
